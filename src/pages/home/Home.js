@@ -4,10 +4,7 @@ import PostList from '../../components/PostList';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import {
-  isLoggedIn as isLoggedInAtom,
-  selectedPost as selectedPostAtom,
-} from '../../atom';
+import { selectedPost as selectedPostAtom } from '../../atom';
 
 function Home() {
   const [selectedPost, setSelectedPost] = useRecoilState(selectedPostAtom);
@@ -21,7 +18,7 @@ function Home() {
       setPosts(response[0]);
     }
     fetchPosts();
-  }, []);
+  }, [posts]);
 
   function action(postId) {
     navigate('/edit');

@@ -4,10 +4,18 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { deletePost } from '../api/PostsApi';
+import { accessToken as accessTokenAtom } from '../atom';
+import { useRecoilState } from 'recoil';
 
 export default function Post({ post, action }) {
-  function handlePostClick() {
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
+
+  function handleEditClick() {
     action(post.title);
+  }
+  function handleDeleteClick() {
+    deletePost(post.title, accessToken);
   }
 
   return (
@@ -23,8 +31,11 @@ export default function Post({ post, action }) {
           <Typography variant="body2">{post.content}</Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={handlePostClick}>
+          <Button size="small" onClick={handleEditClick}>
             Click to edit
+          </Button>
+          <Button variant="outlined" color="error" onClick={handleDeleteClick}>
+            Delete
           </Button>
         </CardActions>
       </Card>

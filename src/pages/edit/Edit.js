@@ -1,24 +1,24 @@
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import Box from '@mui/material/Box';
-import './Edit.css';
+import { createPost, getPostById, updatePost } from '../../api/PostsApi';
 import {
   accessToken as accessTokenAtom,
   selectedPost as selectedPostAtom,
 } from '../../atom';
-import { getPostById, updatePost } from '../../api/PostsApi';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import { Navigate, useNavigate } from 'react-router-dom';
+import './Edit.css';
 
 export default function Edit() {
   const [selectedPost, setSelectedPost] = useRecoilState(selectedPostAtom);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenAtom);
   const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
   const [post, setPost] = useState({ creator: '', title: '', content: '' });
   const navigate = useNavigate();
 
@@ -28,16 +28,69 @@ export default function Edit() {
     navigate('/');
   };
 
-  useEffect(() => {
-    async function fetchPost() {
-      let response = await getPostById(selectedPost);
-      setPost(response[0]);
-    }
-    fetchPost().catch((err) => console.log(err));
-  }, []);
+  const onCreateClick = (event) => {
+    createPost(title, content, accessToken);
+    setSelectedPost(null);
+    setTitle('');
+    setContent('');
+    navigate('/');
+  };
 
-  return (
-    <div className="edit-container">
+  useEffect(() => {
+    if (selectedPost) {
+      async function fetchPost() {
+        let response = await getPostById(selectedPost);
+        setPost(response[0]);
+      }
+      fetchPost().catch((err) => console.log(err));
+    }
+  }, [selectedPost]);
+
+  const postCreate = () => {
+    return (
+      <div className="post-create">
+        <Card sx={{ minWidth: 350 }}>
+          <CardContent>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            ></Typography>
+            <Typography variant="h6" component="div"></Typography>
+            <Typography variant="h6"></Typography>
+            <TextField
+              fullWidth
+              id="content"
+              label="Input Title"
+              name="content"
+              onChange={(event) => setTitle(event.target.value)}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              id="content"
+              label="Input content"
+              name="content"
+              onChange={(event) => setContent(event.target.value)}
+            />
+          </CardContent>
+          <CardActions>
+            <Button
+              type="submit"
+              variant="outlined"
+              size="small"
+              onClick={onCreateClick}
+            >
+              Click to Save
+            </Button>
+          </CardActions>
+        </Card>
+      </div>
+    );
+  };
+
+  const postEdit = () => {
+    return (
       <div className="post-edit">
         <Card sx={{ minWidth: 350 }}>
           <CardContent>
@@ -72,6 +125,12 @@ export default function Edit() {
           </CardActions>
         </Card>
       </div>
+    );
+  };
+
+  return (
+    <div className="edit-container">
+      {selectedPost ? postEdit() : postCreate()}
     </div>
   );
 }
