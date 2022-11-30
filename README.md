@@ -11,60 +11,39 @@ In the project directory, you can run:
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Java webservices – last assignment
 
-### `npm test`
+In this last assignment for this couse I have been working mostly in the frontend, that’s because in the last course I did most of the backend, so we decided to switch this time around. I started with opening a new diagram on app.diagrams.net and sketching up workflow, dependencies and project architecture. This was just to get an idea of what to do first and not a final blueprint. I think it helps a lot to do this, you can keep track of what the plan is, and you can always change the plan as you go.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+For this app I wanted to go with React as the frontend library, with Material UI or MUI design library. For state management I wanted to investigate Recoil which was recommended to us in a previous course. I had not before used it so this would be interesting, in earlier projects I have opted for other solutions like useReducer with useContext. For routing I thought I just use the standard react-router library
 
-### `npm run build`
+### Architecture
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+I separated modules in four directories: api, components, constants, pages. Pages represented different pages in the React app. I merged similar functionalities like register and login into the same page, which could share the same UI components. This is to make development faster and reduce boilerplate.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Webservice-requests
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+For communication with our java webservice backend I stuck with the standard fetch() API. I have tried axios also but think this works just as well. I separated the logic into two modules, PostApi.js and UserApi.js, according to the different resources in the backend.
+Design
 
-### `npm run eject`
+For UI design I used components from MUI, I have used this library before and it takes very little time to implement and looks really well. All without having to think too much about CSS which can be really nitty-gritty.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Discussion
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+I had two big issues during this project which took a lot of time to sort out or figure out something else. The first one was with useLocation hook. My intention was to use that hook to set the “state” property of the location object to the path of where the user was coming from. Then use the useNavigate hook to navigate to that path/endpoint. One example of the flow would be `Click Edit on Post -> Need to login -> Navigate to Edit post`.
+When going from step 2 to 3 the app needs to know where it came from, in step 1. Because in another example the flow would be
+`Click Create New Post -> Need to login -> Navigate to Create Post`, or
+`Click to Login -> Need to login -> Navigate to homescreen(“/”)`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+I researched a lot but could not make it work as expected, even though I am positive I used the hook correctly. Anyways I needed to get it done and needed to send a path to useNavigate(), so I made a temporary fix which just checks if there is anything in the selectPost state, then it would send you to edit-page after login. But I think now I will just send all paths to edit-page after login and check the selectPost there instead and render different components if there is a selected post or not.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+If I would continue working on this app, I would research another similar solution that would solve this problem. I could probably just use a stack in a global state, but I don’t think that would have solved the problem more elegantly than using an established module.
 
-## Learn More
+My second big problem was actually in the backend with cors policy. At the start of the project I got one cors policy-error In the chrome developer console. That was resolved when I added a bean which allowed origin of the React app (localhost:3000). But then another cors-policy error showed up in console when I was implementing updatePost with PUT requests.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+I researched and modified everything with that bean, allowed methods and exposed headers. Since it was that bean that resolved it the first time I thought it was responsible for cors policy. Turned out anyways that I needed to modify the filterchain bean aswell that Philip had implemented. Which I think is odd because I needed to
+first cors().disable() then allow origin in the corsmapping.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Anyways overall I have enjoyed doing this assignment and think it went very well and was challenging at the same time. Learned a lot of new stuff about react and spring boot and feel more confident in developing these kind of projects now and Im looking forward to the next course project
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+/Johan

@@ -2,7 +2,6 @@ import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import { isLoggedIn as isLoggedInAtom } from './atom';
-import Edit from './pages/edit/Edit';
 
 const ProtectedRoutes = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
