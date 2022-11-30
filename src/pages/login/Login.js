@@ -58,7 +58,7 @@ export default function Login() {
         setIsLoggedIn(true);
         alert('Login successful!');
         // TODO: location.state redirect doesnt work...
-        // Using navigate instead
+        // Using only navigate(/edit) instead
         // if (location.state?.from) {
         //   navigate(location.state.from);
         // }
