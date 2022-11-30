@@ -62,9 +62,7 @@ export default function Login() {
         // if (location.state?.from) {
         //   navigate(location.state.from);
         // }
-        if (selectedPost) {
-          navigate('/edit');
-        }
+        navigate('/edit');
       }
       if (error) {
         console.error(error);
